@@ -1,10 +1,10 @@
 ### Json Web Token - JWT
 O que é JWT ?
 
-É um padrão aberto defindo pela RFC 7519 que perminite transmitir informação entre duas partes de forma segura, compacta e verificavel .É amplamente ultilizado em autenticação e troca de informações por API's rests 
+    É um padrão aberto defindo pela RFC 7519 que perminite transmitir informação entre duas partes de forma segura, compacta e verificavel .É amplamente ultilizado em autenticação e troca de informações por API's rests 
 
 
-Ideia cental: em vez de guarda o estado da seção no servidor o propio cliente carrega um token assinado que prova a sua identidade (requisição).
+- Ideia cental: em vez de guarda o estado da seção no servidor o propio cliente carrega um token assinado que prova a sua identidade (requisição).
 
 ### Pra que usar o JWT? 
 - Login de usuario
@@ -15,7 +15,7 @@ Ideia cental: em vez de guarda o estado da seção no servidor o propio cliente 
 - Reset de senha
 
 
-JWT não e uma solução pra tudo.
+### JWT não e uma solução pra tudo.
 Para sessoes longas e complexas com a necessidade de invalidação imediata(bancos, sistemas criticos), session com REDIS é mais adequado. JWT -> em API's e Microserviços
 
 ### Estrutura JWT
