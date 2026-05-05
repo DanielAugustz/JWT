@@ -1,59 +1,109 @@
-### Json Web Token - JWT
-O que é JWT ?
+### JSON WEB TOKES - JWT
 
-    É um padrão aberto defindo pela RFC 7519 que perminite transmitir informação entre duas partes de forma segura, compacta e verificavel .É amplamente ultilizado em autenticação e troca de informações por API's rests 
+O QUE É O JWT?
 
+É UM PADRÃO ABERTO DEFINIDO PELA RFC 7519 QUE PERMITE TRANSMITIR INFORMAÇÕES ENTRE DUAS PARTES DE FORMA SEGURA, COMPACTA E VERIFICÁVEL. É AMPLAMENTE UTILIZADO EM AUTENTICAÇÃO E TROCA DE INFORMAÇÕES POR API'S REST.
 
-- Ideia cental: em vez de guarda o estado da seção no servidor o propio cliente carrega um token assinado que prova a sua identidade (requisição).
+A IDEIA CENTRAL DELE: EM VEZ DE GUARDAR O ESTADO DA SESSÃO NO SERVIDPOR, O PRÓPRIO CLIENTE CARREGA UM TOKEN ASSINADO QUE PROVA A SUA IDENTIDADE(REQUISIÇÃO).
 
-### Pra que usar o JWT? 
-- Login de usuario
-- Autorização de API
-- Microserviços
-- Verficação de E-mail
-- SSO / Outh2.0
+## PRA QUE USAR O JWT?
+
+- LOGIN DE USUARIOS
+- AUTORIZAÇÃO DE API
+- MICROSERVIÇOS
+- VERIFICAÇÃO DE EMAIL
+- SSO / OUTH 2.0
 - Reset de senha
 
 
-### JWT não e uma solução pra tudo.
-Para sessoes longas e complexas com a necessidade de invalidação imediata(bancos, sistemas criticos), session com REDIS é mais adequado. JWT -> em API's e Microserviços
+JWT não é uma solução para tudo.
+para sessões longas e complexas com a necessidade de invalidação imediade( bancos, sistemas críticos),  sessions com REDIS é mais adequado. jwt -> em API'S e microsserviços.
 
-### Estrutura JWT
-- 1 - Header
-   DDefinir o tipo de token eo algoritimo de assinatura 
+### Estrutura do JWT
+
+- 1 -  Header
+    Definir o tipo de token e o algoritmo de assinatura
 - 2 - Payload
-    Contem as infromações do usuario e seus metadados
+    Contém as informações do usuário e os seus metadados
 - 3 - Signature
-    Garente que o token não foi alterado durante a sessão
+    Garante que o token não foi alterado durante a sessão
 
 ### Fluxo de autenticação com JWT
-    O ciclo completo de login ao acesso de recursos protegidos
 
-- Usuario faz login.
-    -> Envio de credencias(e-mail + senha) via POST para /auth/login.
-- Sevidor vai validar das credencias passadas
-    -> Buscar o Usuario no banco de dados(relacional ou não relacional), compara o hash de senha do bcrypt.
-- Sevidor gerar e retornar o token
-    -> Assinar o token como SECRET_KEY e definir a expiração dessa secret(24h)
-- Cliente vai armazenar
-    -> Localstorage guardar o nosso token ou HTTPOnly cookie (recomendado).
-- Cliente envia o token das requisições
-    -> Header:Authorization: Bearer <token>
-- Servidor vai validar o JWT
-    -> Middleware verifica a assinatura, expiração e extrai as claims.
-- Acesso concedido ou negado
-    -> Se valido, retorna o recuso. Se invalido/Expirado, retorno ou 401/403
+O ciclo completo de login ao acesso de recursos protegidos.
 
-#### Access Token vs Refresh Token
-Em sistemas reais usamos dois para balancear a segurança e a usabilidade
+-Usuário faz o login.
+    -> Envio de credenciais(email + senha) via POST para uma rota /auth/login.
 
-### Access token
-- Vida curta: 15min a 1 hora
-- Enviado a cada requisição
-- Se vazar, dano limitado
+- Servidor validar as credenciais passadas
+    -> Buscar o usuário no banco de dados( relacional ou não), compara o hash de senha do bcrypt.
 
-### Refresh token
-- Vida longa: 1 a 30 dias
-- Usado para renovar o Access
+- Servidor gerar e retornar o token
+    -> Localstorage gerar e retornar o token
+    -> Assina o token como SECRET_KEY e definir a experação dessas secret(24h).
+
+- Cliente armazena o token
+    -> Localstorage guardar o nosso token ou HTTPOnly cookie( recomendado)
+
+-Cliente envia o token nas requisições.
+    Header:  Authprization: Bearer <token>
+
+- Servidor vai validar o JWT 
+    -> Middleware verifica a assinatura, expiracão e extrai as claims
+
+-Acesso concedido ou Negado
+    Se valido, retorna o recuso. se Inválido/Expirado, retorna 401/403
+
+### ACESS TOKEN VS REFRESH TOKEN
+Em sistemas reais, usamos dois tokens para balancear a seguranca e usabilidade.
+
+### ACESS token
+- vida curta: 15 min a 1 hora
+- enviado em cada requisição
+- se vazar, dano limitado
+
+### Refresh Token
+- Vida longa: 7 a 30 dias
+- Usado só para renovar o acess.
 - Armazenado com mais cuidado
 
+### Rotas Protegidas, Middlewares e Segurança
+
+## 1. Middleware
+
+- O que é um middleware
+no Express é qualquer função com assinatura (req, res, next). Ele fica entre a requisição que chega e o controller que responde. A cadeia de moddlewares executa em sequencia - cada um decide se passa para o peóximo chamando next() ou interrompe  a requisição respondendo diretamente.
+
+// Requisição entra -> passa para cada middleware em ordem
+Request -> [logger] -> [cors] -> [helmet] -> [rate-limt] -> [authenticate] -> [authorize] -> <controller> -> response
+
+// cada middleware pode:
+
+- 1. executar qualquer código.
+- 2. modificar req e res;
+- 3. Chamar Next() para continuar
+- 4. Encerrar a cadeia respondendo diretamente
+
+### Anatomia de um middleware
+código no arquivo: <exemplo_middleware.js>
+
+### tipos de middleware no Express
+
+- 1. Global
+Como registrar: <app.use(fn)>
+Escopo: Todas as Rotas(<ex_middleware_global.js>)
+
+- 2. Por prefixo.
+Como registrar: <app.use('/api', fn)>
+Escopo: Rotas que começam com o /api.
+
+- 3. Por rota.
+Como registrar: <router.get('/path', fn, controller)>
+Escopo: somente nessa rota
+
+- 4. De erro.
+Como registrar: <app.use((err, req, res, next)=>{})>
+igual ao código do <exemplo_middleware.js>, o segundo middleware
+
+
+'
