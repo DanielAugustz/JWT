@@ -106,4 +106,22 @@ Como registrar: <app.use((err, req, res, next)=>{})>
 igual ao código do <exemplo_middleware.js>, o segundo middleware
 
 
-'
+### Arquitetura de Rotas Seguras
+
+Uma Api bem projetada separa claramente  rotas publicas de rotas protegidas, e dentro as protegidas, controla o acesso por prefil(role)
+
+### Estrategia de Proteção em camadas
+- 1. Rota publica: Sem autenticação
+Exemplo: GET /produtos, POST /auth/login
+
+- 2. Rotas Autenticada: Qualquer usuario logado
+Exemplo: GET /perfil, PUT /preferencias.
+
+- 3. Rota por role: Usuario logado + role especifico.
+Exemplo: DELETE /usuario/:id apenas para admin.
+
+- 4. Role de dono: Usuarios logado + deve ser dono do recurso.
+Exemplo: PUT /posts/:id só quem criou o post pode editar.
+
+### Mddleware de Auth
+<exemplo_middleware_Auth.js>
